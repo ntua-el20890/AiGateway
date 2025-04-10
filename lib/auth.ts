@@ -2,6 +2,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import NextAuth from "next-auth"
 import axios from "axios"; 
 import { connectToDatabase, COLLECTIONS, hashPassword, verifyPassword } from '@/services/mongoService';
+const { getToken } = require("next-auth/jwt");
 
 // Replace with your actual API endpoint that's running the Python script
 const API_URL = 'http://localhost:3002/api/login';
@@ -53,11 +54,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
 
         if (isValid) {
+          const token = await getToken({
+            req: {
+              headers: {
+                authorization: `Bearer ${credentials.username}`,
+              },
+            },
+            secret: process.env.NEXTAUTH_SECRET || "your-jwt-secret-key",
+          });
+          console.log("Token from JWT", token);
           // Return a user object that will be stored in the JWT
           return {
             id: String(credentials.username),
             name: `User ${credentials.username}`,
             username: String(credentials.username),
+            token: token, 
           };
         }
 
@@ -72,11 +83,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
+      console.log("JWT Callback", { token, user });
       // Add user data to token when first signing in
       if (user) {
         token.id = user.id;
         token.username = user.username;
+        token.accessToken = user.token; // Add the token to the JWT
       }
+      console.log("JWT Token", token);
       return token;
     },
     async session({ session, token }) {
@@ -84,6 +98,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
+        session.user.token = token.accessToken as string;
       }
       return session;
     },

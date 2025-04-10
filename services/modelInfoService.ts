@@ -1,13 +1,19 @@
-// services/modelInfoService.ts
 import { Model } from '../types';
 
 const API_URL = 'http://localhost:3001/api/models'; 
 
 export const modelInfoService = {
-  async getModels(): Promise<Model[]> {
+  async getModels(token?: string): Promise<Model[]> {
     try {
-      const response = await fetch(API_URL);
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const response = await fetch(API_URL, {
+        headers,
+      });
       if (!response.ok) {
+        
         throw new Error(`Failed to fetch models: ${response.status}`);
       }
       const models: Model[] = await response.json();

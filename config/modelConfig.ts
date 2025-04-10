@@ -167,10 +167,10 @@ export const getModelApiRoute = (modelId: string): string => {
   return endpoint ? endpoint.endpointRoute : '/api/chat';
 };
 
-// Check if a model requires an API key
-export const modelRequiresApiKey = (modelId: string): boolean => {
-  const model = availableModels.find(m => m.id === modelId);
-  if (!model) return true;
+// // Check if a model requires an API key
+// export const modelRequiresApiKey = (modelId: string): boolean => {
+//   const model = availableModels.find(m => m.id === modelId);
+//   if (!model) return true;
   
-  return model.requiresApiKey;
-};
+//   return model.requiresApiKey;
+// };
