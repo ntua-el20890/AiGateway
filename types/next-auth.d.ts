@@ -19,6 +19,7 @@ declare module "next-auth" {
       image?: string;
       token?: string; 
     };
+    accessToken?: string; // Add accessToken to session
   }
 }
 
