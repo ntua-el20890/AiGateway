@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ChevronLeft, ChevronRight, Check, Loader } from 'lucide-react';
 import { useSession } from '@/context/SessionContext';
 import { phases, tasks, scopes, languages, models, ratingOptions, configSteps } from '@/data/mockData';
-import StepIndicator from '@/components/StepIndicator';
+import StepIndicator from '@/components/StepIndicator';;
 import RatingSlider from '@/components/RatingSlider';
 import ModelCard from '@/components/ModelCard';
 import ApiKeyDialog from '@/components/ApiKeyDialog';
@@ -15,10 +15,11 @@ import { modelRequiresApiKey } from '@/config/modelConfig';
 import { useToast } from '@/hooks/use-toast';
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useSession as useNextAuthSession, signIn, signOut } from 'next-auth/react';
-import { getPhases, getTasks, getScopes, getLanguages, getModels } from '@/services/configService';
+import { getPhases, getTasks, getScopes, getLanguages } from '@/services/configService';
 import { useQuery } from '@tanstack/react-query';
+import { getModels } from '@/services/modelInfoService';
 
-const Configure = () => {
+const Configure: React.FC = () => {
   const router = useRouter();
   const { data: session, status } = useNextAuthSession();
   const { toast } = useToast();
@@ -41,7 +42,18 @@ const Configure = () => {
   const [filteredLanguages, setFilteredLanguages] = useState(languages);
   
   const [showApiKeyDialog, setShowApiKeyDialog] = useState(false);
-  const [apiKey, setApiKey] = useState('');
+    const [apiKey, setApiKey] = useState('');
+
+    const { data: models, isLoading, error } = useQuery({
+        queryKey: ['models'],
+        queryFn: getModels,
+    });
+
+    useEffect(() => {
+      if (error) {
+        toast({ title: "Error", description: "Failed to load models." });
+      }
+    }, [error]);
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -82,7 +94,7 @@ const Configure = () => {
     if (step < configSteps.length - 1) {
       setStep(step + 1);
     } else {
-      const selectedModelObj = models.find(m => m.id === selectedModel);
+        const selectedModelObj = models?.find(m => m.id === selectedModel);
       
       // Check if model requires API key from user
       if (selectedModelObj && !selectedModelObj.runsLocally && modelRequiresApiKey(selectedModelObj.name)) {
@@ -100,12 +112,12 @@ const Configure = () => {
     const taskName = tasks.find(t => t.id === selectedTask)?.name || '';
     const scopeName = scopes.find(s => s.id === selectedScope)?.name || '';
     const languageName = languages.find(l => l.id === selectedLanguage)?.name || '';
-    const modelName = models.find(m => m.id === selectedModel)?.name || '';
-
+    const modelName = models?.find(m => m.id === selectedModel)?.name || '';
     initializeSession(
       phaseName,
       taskName,
       scopeName,
+
       languageName,
       modelName,
       skillLevel,
@@ -246,7 +258,9 @@ const Configure = () => {
       
       case 5: // Model selection
         return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 animate-scale-in">
+          <>
+            {isLoading && <Loader className="animate-spin" />}
+            {models && <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 animate-scale-in">
             {models.map(model => (
               <ModelCard
                 key={model.id}
@@ -255,7 +269,8 @@ const Configure = () => {
                 onClick={() => setSelectedModel(model.id)}
               />
             ))}
-          </div>
+            </div>}
+          </>
         );
       
       default:
@@ -314,7 +329,7 @@ const Configure = () => {
       </Card>
       
       <ApiKeyDialog 
-        modelName={models.find(m => m.id === selectedModel)?.name || ''}
+        modelName={models?.find(m => m.id === selectedModel)?.name || ''}
         isOpen={showApiKeyDialog}
         onClose={() => setShowApiKeyDialog(false)}
         onConfirm={handleApiKeyConfirm}
