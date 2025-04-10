@@ -17,7 +17,8 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useSession as useNextAuthSession, signIn, signOut } from 'next-auth/react';
 import { getPhases, getTasks, getScopes, getLanguages } from '@/services/configService';
 import { useQuery } from '@tanstack/react-query';
-import { getModels } from '@/services/modelInfoService';
+import { modelInfoService } from '@/services/modelInfoService';
+
 
 const Configure: React.FC = () => {
   const router = useRouter();
@@ -46,7 +47,7 @@ const Configure: React.FC = () => {
 
     const { data: models, isLoading, error } = useQuery({
         queryKey: ['models'],
-        queryFn: getModels,
+        queryFn: modelInfoService.getModels,
     });
 
     useEffect(() => {
@@ -54,7 +55,6 @@ const Configure: React.FC = () => {
         toast({ title: "Error", description: "Failed to load models." });
       }
     }, [error]);
-  const [isLoading, setIsLoading] = useState(false);
 
 
   // Update filtered tasks when phase changes
