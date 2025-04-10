@@ -1,7 +1,7 @@
 // services/modelInfoService.ts
 import { Model } from '../types';
 
-const API_URL = '/api/models'; // Replace with your actual Model Info Service URL if different
+const API_URL = 'http://localhost:3001/api/models'; 
 
 export const modelInfoService = {
   async getModels(): Promise<Model[]> {
@@ -11,6 +11,8 @@ export const modelInfoService = {
         throw new Error(`Failed to fetch models: ${response.status}`);
       }
       const models: Model[] = await response.json();
+      //logging the models for debugging
+      console.log('Fetched models:', models);
       return models;
     } catch (error) {
       console.error('Error fetching models:', error);

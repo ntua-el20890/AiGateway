@@ -4,7 +4,7 @@ import axios from "axios";
 import { connectToDatabase, COLLECTIONS, hashPassword, verifyPassword } from '@/services/mongoService';
 
 // Replace with your actual API endpoint that's running the Python script
-const API_URL = 'http://localhost:3001/api/login';
+const API_URL = 'http://localhost:3002/api/login';
 
 export const validateCredentials = async (username: string, password: string): Promise<boolean> => {
   try {

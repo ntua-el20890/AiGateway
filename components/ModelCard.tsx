@@ -1,11 +1,23 @@
-
-import React from 'react';
-import { Model } from '@/types';
-import { CheckIcon, ImageIcon, LaptopIcon, CloudIcon, KeyIcon, ServerIcon } from 'lucide-react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { ExtendedModel } from '@/config/modelConfig';
+import React from "react";
+import { Model } from "@/types";
+import {
+  CheckIcon,
+  ImageIcon,
+  LaptopIcon,
+  CloudIcon,
+  KeyIcon,
+  ServerIcon,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { ExtendedModel } from "@/config/modelConfig";
 
 interface ModelCardProps {
   model: Model | ExtendedModel;
@@ -19,12 +31,12 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, selected, onClick }) => {
   const hasProviderInfo = Boolean(extendedModel.provider);
 
   return (
-    <Card 
+    <Card
       className={cn(
         "cursor-pointer transition-all duration-300 hover-effect",
-        selected 
-          ? "border-primary ring-2 ring-primary/20" 
-          : "hover:border-primary/40",
+        selected
+          ? "border-primary ring-2 ring-primary/20"
+          : "hover:border-primary/40"
       )}
       onClick={onClick}
     >
@@ -39,23 +51,35 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, selected, onClick }) => {
         <CardTitle className="text-lg flex items-center gap-2">
           {model.name}
           {model.runsLocally ? (
-            <Badge variant="outline" className="ml-1 bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
+            <Badge
+              variant="outline"
+              className="ml-1 bg-green-50 text-green-700 border-green-200 flex items-center gap-1"
+            >
               <LaptopIcon className="h-3 w-3" />
               <span className="text-xs">Local</span>
             </Badge>
           ) : (
             <div className="flex gap-1">
-              <Badge variant="outline" className="ml-1 bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1">
+              <Badge
+                variant="outline"
+                className="ml-1 bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1"
+              >
                 <CloudIcon className="h-3 w-3" />
                 <span className="text-xs">Cloud</span>
               </Badge>
               {extendedModel.requiresApiKey ? (
-                <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1">
+                <Badge
+                  variant="outline"
+                  className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1"
+                >
                   <KeyIcon className="h-3 w-3" />
                   <span className="text-xs">API Key</span>
                 </Badge>
               ) : (
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
+                <Badge
+                  variant="outline"
+                  className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1"
+                >
                   <KeyIcon className="h-3 w-3" />
                   <span className="text-xs">Key Provided</span>
                 </Badge>
@@ -75,7 +99,11 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, selected, onClick }) => {
       </CardContent>
       <CardFooter className="pt-2 flex gap-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
-          <span>{model.contextLength.toLocaleString()} tokens</span>
+          <span>
+            {model.contextLength
+              ? model.contextLength.toLocaleString() + " tokens"
+              : "N/A"}
+          </span>
         </div>
         {model.supportsImages && (
           <div className="flex items-center gap-1">
