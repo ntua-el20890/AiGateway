@@ -11,7 +11,7 @@ import StepIndicator from '@/components/StepIndicator';
 import RatingSlider from '@/components/RatingSlider';
 import ModelCard from '@/components/ModelCard';
 import ApiKeyDialog from '@/components/ApiKeyDialog';
-import { modelRequiresUserApiKey } from '@/services/aiService';
+import { modelRequiresApiKey } from '@/config/modelConfig';
 import { useToast } from '@/hooks/use-toast';
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useSession as useNextAuthSession, signIn, signOut } from 'next-auth/react';
@@ -85,7 +85,7 @@ const Configure = () => {
       const selectedModelObj = models.find(m => m.id === selectedModel);
       
       // Check if model requires API key from user
-      if (selectedModelObj && !selectedModelObj.runsLocally && modelRequiresUserApiKey(selectedModelObj.name)) {
+      if (selectedModelObj && !selectedModelObj.runsLocally && modelRequiresApiKey(selectedModelObj.name)) {
         console.log("Opening API key dialog for model:", selectedModelObj.name);
         setShowApiKeyDialog(true);
       } else {
