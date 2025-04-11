@@ -8,7 +8,7 @@ export const modelInfoService = {
       const headers: HeadersInit = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
-        console.log('Authorization Header:', headers['Authorization']); // Debug log
+        // console.log('Authorization Header:', headers['Authorization']); // Debug log
       }
       const response = await fetch(API_URL, {
         headers,

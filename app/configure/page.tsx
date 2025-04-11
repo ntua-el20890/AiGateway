@@ -48,7 +48,7 @@ const Configure: React.FC = () => {
         queryKey: ['models'],
         queryFn: async () => {
           const token = session?.accessToken;
-          console.log('token',token)
+          // console.log('token',token)
           return modelInfoService.getModels(token);
         },
     });
